@@ -49,6 +49,11 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
     std::string line;
 
     while (std::getline(file, line)) {
+        // Ignore empty lines (lines that are just spaces or completely empty)
+        if (line.empty()) {
+            continue;
+        }
+
         std::istringstream iss(line);
         std::string segment;
         std::vector<std::string> fields;
@@ -60,7 +65,7 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
         if (isValidRoute(fields)) {
             routes.push_back({fields[0], fields[1], fields[2], fields[3], std::stod(fields[4])});
         } else {
-            errFile << line << "\n";
+            errFile << line << "\n";  // Write invalid route to error file
         }
     }
     file.close();
