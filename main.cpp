@@ -148,6 +148,5 @@ int main() {
         }
     } while (command != 'e');
 
-    std::cout << "Program terminated.\n";
     return 0;
 }
