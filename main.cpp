@@ -118,8 +118,8 @@ void queryD(const std::string& errorFile) {
     }
     file.close();
 
-    // Return to stop further input prompts after displaying errors
-    return;
+    // Exit after printing the error file content to stop the command prompt
+    exit(0); // This will stop the program here and prevent further prompts
 }
 
 
