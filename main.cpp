@@ -46,14 +46,21 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
         }
 
         if (isValidRoute(fields)) {
-            routes.push_back({fields[0], fields[1], fields[2], fields[3], std::stod(fields[4])});
+            Route route;
+            route.start = fields[0];
+            route.end = fields[1];
+            route.day = fields[2];
+            route.time = fields[3];
+            route.price = std::stod(fields[4]);
+            routes.push_back(route);
         } else {
-            errFile << line << "\n";
+            errFile << line << "\n"; // Write invalid line as-is
         }
     }
     file.close();
     errFile.close();
 }
+
 
 void printRoutes(const std::vector<Route>& routes) {
     std::cout << "result:\n";
