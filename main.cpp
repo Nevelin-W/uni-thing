@@ -69,12 +69,20 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
 
 void printRoutes(const std::vector<Route>& routes) {
     std::cout << "result:\n"; // Add the 'result:' header before output
+    bool first = true;
     for (const auto& route : routes) {
+        // Print a newline only before the first route (not between routes)
+        if (!first) {
+            std::cout << "\n";
+        }
+        first = false;
+
         // Output exactly as expected, separated by spaces
         std::cout << route.start << " " << route.end << " " << route.day << " "
                   << route.time << " " << std::fixed << std::setprecision(2)
-                  << route.price << "\n";
+                  << route.price;
     }
+    std::cout << std::endl; // To ensure the output ends with a newline
 }
 
 void queryA(const std::vector<Route>& routes, const std::string& start, const std::string& end) {
@@ -112,10 +120,17 @@ void queryD(const std::string& errorFile) {
     std::string line;
 
     std::cout << "result:\n"; // Add the 'result:' header before output
+    bool first = true;
     while (std::getline(file, line)) {
+        // Print a newline only before the first error (not between errors)
+        if (!first) {
+            std::cout << "\n";
+        }
+        first = false;
         // Output the error file content as is
-        std::cout << line << "\n";
+        std::cout << line;
     }
+    std::cout << std::endl; // To ensure the output ends with a newline
     file.close();
 }
 
