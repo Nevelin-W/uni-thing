@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include <iomanip>
-#include <algorithm>
 
 struct Route {
     std::string start;
