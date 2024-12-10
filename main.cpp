@@ -69,8 +69,9 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
 
 void printRoutes(const std::vector<Route>& routes) {
     for (const auto& route : routes) {
-        std::cout << route.start << " " << route.end << " " << route.day
-                  << " " << route.time << " " << std::fixed << std::setprecision(2)
+        // Output exactly as expected, separated by commas
+        std::cout << route.start << "," << route.end << "," << route.day << ","
+                  << route.time << "," << std::fixed << std::setprecision(2)
                   << route.price << "\n";
     }
 }
