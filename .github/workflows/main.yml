@@ -1,0 +1,98 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: 'test '
+      id: test
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'test '
+        setup-command: g++ -std=c++2a main.cpp -o main.out
+        command: "./main.out"
+        input: |
+          a
+          Riga
+          Kraslava
+          e
+        expected-output: |-
+          result:
+          Riga Kraslava Pr 15:00 11.00
+          Riga Kraslava Pr 18:00 11.00
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: test 2
+      id: test-2
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: test 2
+        setup-command: g++ -std=c++2a main.cpp -o main.out
+        command: " ./main.out"
+        input: |
+          d
+          e
+        expected-output: |-
+          result:
+          Ventsplis,8.00,Liepaja,Sv,20:00
+          Dagda,Sv
+          Dagda,Kraslava,Ce,18:00,2.50,Sv
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: test 3
+      id: test-3
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: test 3
+        setup-command: g++ -std=c++2a main.cpp -o main.out
+        command: "./main.out"
+        input: |
+          b
+          Pt
+          e
+        expected-output: |-
+          result:
+          Riga Ventspils Pt 09:00 6.70
+          Liepaja Ventspils Pt 17:00 5.50
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: test 4
+      id: test-4
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: test 4
+        setup-command: g++ -std=c++2a main.cpp -o main.out
+        command: "./main.out"
+        input: |
+          c
+          5.90
+          e
+        expected-output: |-
+          result:
+          Kraslava Daugavpils Ot 10:00 3.00
+          Dagda Kraslava Ce 18:00 2.50
+          Liepaja Ventspils Pt 17:00 5.50
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TEST_RESULTS: "${{steps.test.outputs.result}}"
+        TEST-2_RESULTS: "${{steps.test-2.outputs.result}}"
+        TEST-3_RESULTS: "${{steps.test-3.outputs.result}}"
+        TEST-4_RESULTS: "${{steps.test-4.outputs.result}}"
+      with:
+        runners: test,test-2,test-3,test-4
