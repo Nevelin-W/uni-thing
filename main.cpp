@@ -43,7 +43,6 @@ bool isValidRoute(const std::vector<std::string>& fields) {
     return true;
 }
 
-
 void loadRoutes(const std::string& filename, std::vector<Route>& routes, const std::string& errorFile) {
     std::ifstream file(filename);
     std::ofstream errFile(errorFile);
@@ -69,7 +68,6 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
 }
 
 void printRoutes(const std::vector<Route>& routes) {
-    std::cout << "result:\n";
     for (const auto& route : routes) {
         std::cout << route.start << " " << route.end << " " << route.day
                   << " " << route.time << " " << std::fixed << std::setprecision(2)
@@ -117,11 +115,7 @@ void queryD(const std::string& errorFile) {
         std::cout << line << "\n";
     }
     file.close();
-
-    // Exit after printing the error file content to stop the command prompt
-    exit(0); // This will stop the program here and prevent further prompts
 }
-
 
 int main() {
     const std::string dbFile = "db.csv";
@@ -130,33 +124,29 @@ int main() {
 
     loadRoutes(dbFile, routes, errFile);
 
-    char command;
-    do {
-        std::cout << "Enter command (a/b/c/d/e): ";
-        std::cin >> command;
-
-        if (command == 'a') {
+    std::string command;
+    while (std::getline(std::cin, command)) {
+        if (command == "a") {
             std::string start, end;
-            std::cout << "Enter starting station: ";
-            std::cin >> start;
-            std::cout << "Enter destination station: ";
-            std::cin >> end;
+            std::cin >> start >> end;
+            std::cin.ignore(); // To consume the newline character after input
             queryA(routes, start, end);
-        } else if (command == 'b') {
+        } else if (command == "b") {
             std::string day;
-            std::cout << "Enter weekday abbreviation (Pr, Ot, Tr, Ce, Pt, St, Sv): ";
             std::cin >> day;
+            std::cin.ignore(); // To consume the newline character after input
             queryB(routes, day);
-        } else if (command == 'c') {
+        } else if (command == "c") {
             double maxPrice;
-            std::cout << "Enter maximum ticket price: ";
             std::cin >> maxPrice;
+            std::cin.ignore(); // To consume the newline character after input
             queryC(routes, maxPrice);
-        } else if (command == 'd') {
+        } else if (command == "d") {
             queryD(errFile);
-        } else if (command != 'e') {
-            std::cout << "Invalid command. Try again.\n";
+        } else if (command == "e") {
+            break;  // Exit the loop when 'e' is entered
         }
-    } while (command != 'e');
+    }
+
     return 0;
 }
