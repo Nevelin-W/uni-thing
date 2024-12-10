@@ -22,14 +22,27 @@ std::string trim(const std::string &str) {
 }
 
 bool isValidRoute(const std::vector<std::string>& fields) {
-    if (fields.size() != 5) return false;
+    if (fields.size() != 5) return false; // Expect exactly 5 fields.
+
     try {
-        std::stod(fields[4]); // Validate price
+        // Check if the 5th field is a valid double (ticket price).
+        std::stod(fields[4]);
     } catch (...) {
         return false;
     }
+
+    // Additional validation: Ensure time format (hh:mm).
+    const std::string& time = fields[3];
+    if (time.size() != 5 || time[2] != ':' || 
+        !std::isdigit(time[0]) || !std::isdigit(time[1]) || 
+        !std::isdigit(time[3]) || !std::isdigit(time[4])) {
+        return false;
+    }
+
+    // If all checks pass, the route is valid.
     return true;
 }
+
 
 void loadRoutes(const std::string& filename, std::vector<Route>& routes, const std::string& errorFile) {
     std::ifstream file(filename);
@@ -46,21 +59,14 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
         }
 
         if (isValidRoute(fields)) {
-            Route route;
-            route.start = fields[0];
-            route.end = fields[1];
-            route.day = fields[2];
-            route.time = fields[3];
-            route.price = std::stod(fields[4]);
-            routes.push_back(route);
+            routes.push_back({fields[0], fields[1], fields[2], fields[3], std::stod(fields[4])});
         } else {
-            errFile << line << "\n"; // Write invalid line as-is
+            errFile << line << "\n";
         }
     }
     file.close();
     errFile.close();
 }
-
 
 void printRoutes(const std::vector<Route>& routes) {
     std::cout << "result:\n";
@@ -107,6 +113,7 @@ void queryD(const std::string& errorFile) {
 
     std::cout << "result:\n";
     while (std::getline(file, line)) {
+        // Output the error file content as is
         std::cout << line << "\n";
     }
     file.close();
@@ -147,6 +154,5 @@ int main() {
             std::cout << "Invalid command. Try again.\n";
         }
     } while (command != 'e');
-
     return 0;
 }
