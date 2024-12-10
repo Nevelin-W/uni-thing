@@ -68,6 +68,7 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
 }
 
 void printRoutes(const std::vector<Route>& routes) {
+    std::cout << "result:\n"; // Add the 'result:' header before output
     for (const auto& route : routes) {
         // Output exactly as expected, separated by commas
         std::cout << route.start << "," << route.end << "," << route.day << ","
@@ -110,7 +111,7 @@ void queryD(const std::string& errorFile) {
     std::ifstream file(errorFile);
     std::string line;
 
-    std::cout << "result:\n";
+    std::cout << "result:\n"; // Add the 'result:' header before output
     while (std::getline(file, line)) {
         // Output the error file content as is
         std::cout << line << "\n";
