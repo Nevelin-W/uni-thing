@@ -117,7 +117,11 @@ void queryD(const std::string& errorFile) {
         std::cout << line << "\n";
     }
     file.close();
+
+    // Return to stop further input prompts after displaying errors
+    return;
 }
+
 
 int main() {
     const std::string dbFile = "db.csv";
