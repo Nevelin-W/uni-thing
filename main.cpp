@@ -13,32 +13,36 @@ struct Route {
     double price;
 };
 
-// Helper functions
 std::string trim(const std::string &str) {
     size_t first = str.find_first_not_of(" \t");
     size_t last = str.find_last_not_of(" \t");
     return (first == std::string::npos || last == std::string::npos) ? "" : str.substr(first, last - first + 1);
 }
 
+std::string cleanLine(const std::string& line) {
+    std::string result = trim(line);
+    if (!result.empty() && result.back() == '\r') {
+        result.pop_back(); // Remove trailing \r
+    }
+    return result;
+}
+
 bool isValidRoute(const std::vector<std::string>& fields) {
-    if (fields.size() != 5) return false; // Expect exactly 5 fields.
+    if (fields.size() != 5) return false;
 
     try {
-        // Check if the 5th field is a valid double (ticket price).
         std::stod(fields[4]);
     } catch (...) {
         return false;
     }
 
-    // Additional validation: Ensure time format (hh:mm).
     const std::string& time = fields[3];
-    if (time.size() != 5 || time[2] != ':' || 
-        !std::isdigit(time[0]) || !std::isdigit(time[1]) || 
+    if (time.size() != 5 || time[2] != ':' ||
+        !std::isdigit(time[0]) || !std::isdigit(time[1]) ||
         !std::isdigit(time[3]) || !std::isdigit(time[4])) {
         return false;
     }
 
-    // If all checks pass, the route is valid.
     return true;
 }
 
@@ -48,7 +52,7 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
     std::string line;
 
     while (std::getline(file, line)) {
-        // Ignore empty lines (lines that are just spaces or completely empty)
+        line = cleanLine(line); // Clean the line
         if (line.empty()) {
             continue;
         }
@@ -64,7 +68,7 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
         if (isValidRoute(fields)) {
             routes.push_back({fields[0], fields[1], fields[2], fields[3], std::stod(fields[4])});
         } else {
-            errFile << line << "\n";  // Write invalid route to error file
+            errFile << line << std::endl; // Use std::endl to avoid \r\n mismatch
         }
     }
     file.close();
@@ -72,21 +76,19 @@ void loadRoutes(const std::string& filename, std::vector<Route>& routes, const s
 }
 
 void printRoutes(const std::vector<Route>& routes) {
-    std::cout << "result:\n"; // Add the 'result:' header before output
+    std::cout << "result:\n";
     bool first = true;
     for (const auto& route : routes) {
-        // Print a newline only before the first route (not between routes)
         if (!first) {
-            std::cout << "\n";
+            std::cout << std::endl;
         }
         first = false;
 
-        // Output exactly as expected, separated by spaces
         std::cout << route.start << " " << route.end << " " << route.day << " "
                   << route.time << " " << std::fixed << std::setprecision(2)
                   << route.price;
     }
-    std::cout << std::endl; // To ensure the output ends with a newline
+    std::cout << std::endl;
 }
 
 void queryA(const std::vector<Route>& routes, const std::string& start, const std::string& end) {
@@ -123,19 +125,21 @@ void queryD(const std::string& errorFile) {
     std::ifstream file(errorFile);
     std::string line;
 
-    std::cout << "result:\n"; // Add the 'result:' header before output
+    std::cout << "result:" << std::endl;
+
     bool first = true;
     while (std::getline(file, line)) {
-        // Print a newline only before the first error (not between errors)
+        line = cleanLine(line); // Clean the line
+        if (line.empty()) continue;
+
         if (!first) {
-            std::cout << "\n";
+            std::cout << std::endl;
         }
         first = false;
-        // Output the error file content as is
-        std::cout << line;
+
+        std::cout << line << std::endl; // Use std::endl for consistent line endings
     }
-    std::cout << std::endl; // To ensure the output ends with a newline
-    file.close();
+    std::cout << std::endl; 
 }
 
 int main() {
@@ -150,22 +154,22 @@ int main() {
         if (command == "a") {
             std::string start, end;
             std::cin >> start >> end;
-            std::cin.ignore(); // To consume the newline character after input
+            std::cin.ignore();
             queryA(routes, start, end);
         } else if (command == "b") {
             std::string day;
             std::cin >> day;
-            std::cin.ignore(); // To consume the newline character after input
+            std::cin.ignore();
             queryB(routes, day);
         } else if (command == "c") {
             double maxPrice;
             std::cin >> maxPrice;
-            std::cin.ignore(); // To consume the newline character after input
+            std::cin.ignore();
             queryC(routes, maxPrice);
         } else if (command == "d") {
             queryD(errFile);
         } else if (command == "e") {
-            break;  // Exit the loop when 'e' is entered
+            break;
         }
     }
 
