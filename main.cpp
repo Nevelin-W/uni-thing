@@ -132,14 +132,11 @@ void queryD(const std::string& errorFile) {
         line = cleanLine(line); // Clean the line
         if (line.empty()) continue;
 
-        if (!first) {
-            std::cout << std::endl;
-        }
-        first = false;
+        
 
         std::cout << line << std::endl; // Use std::endl for consistent line endings
     }
-    std::cout << std::endl; 
+    
 }
 
 int main() {
